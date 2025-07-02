@@ -41,16 +41,18 @@ Explore(z):
 假设以 B 节点为起点开始dfs遍历，我们默认优先遍历字母序靠前的节点。最终的遍历顺序、pre、post的值如上图所示。
 
 **边的种类：** <br>
-对于边 `z \rarr w`来说：<br>
+对于边 $z \rarr w$来说：<br>
 * Tree edge: B -> A; A -> D; ...; 黑色的 post(z) > post(w)
-* Forward edge： E -> A; F -> B; ...; post(z) < post(w)
-* Back edge：D -> G; B -> E ...  post(z) > post(w)
+* Back edge： E -> A; F -> B; ...; post(z) < post(w)
+* Forward edge：D -> G; B -> E ...  post(z) > post(w)
 * Cross edge：F -> H; H -> G ...  post(z) > post(w)
 
-| Tree edge | Forward edge | Back edge | Cross edge |
+| Tree edge | Back edge | Forward edge | Cross edge |
 | :-------: | :----------: | :-------: | :--------: |
 | B -> A; A -> D ... | E -> A; F -> B ... | D -> G; B -> E ... | F -> H; H -> G ... |
 | post(z) > post(w) | post(z) < post(w) | post(z) > post(w) | post(z) > post(w) |
+
+<p><img src="./img/gr1_edge_types.png" width="600", height="250"></p>
 
 
 根据之前提到的伪码，我们如何获得每个节点的pre呢？—— pre就是前序遍历的顺序，所以我们只需要在“每个节点第一次被遍历到”的时候记录下顺序就行了。同理，post就是当“完成对当前节点所有边的遍历”时，该节点被遍历的顺序。那就有下面的伪码：

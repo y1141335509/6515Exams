@@ -38,6 +38,7 @@ $f=(\bar{X_1} \lor \bar{X_2}\lor X_3)\land (X_2\lor X_3)\land (\bar{X_3}\lor\bar
 但如果我们同时发现 $X_1$能到达$\bar{X_1}$，且$\bar{X_1}$也能到达$X_1$，那么原问题$f$就不存在解。此时，图中会发现$X_1$与$\bar{X_1}$存在于同一个SCC里。于是我们有下面的引理：
 
 <span style="color:cyan">如果对于某个</span>$i$，<span style="color:cyan">使得</span>$X_i$<span style="color:cyan">和</span>$\bar{X_i}$<span style="color:cyan">存在于同一个SCC中，那么原问题</span>$f$<span style="color:cyan">不存在解</span>.
+（这只是假设情况，本题是有解的）
 
 ## 6.1. Algorithm Idea
 方法一：既然上面已经知道该怎么构建有向图，那我们取Sink SCC S
