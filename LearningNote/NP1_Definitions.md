@@ -97,15 +97,66 @@ k-coloring问题也是NP问题 —— 首先假设我们有了一个配色方案
 * 若P ≠ NP	存在一些问题，解可以快速验证，但无法快速求解。这是大多数计算机科学家的普遍共识，但目前没人能严格证明。
 
 
-我们知道$P \subset NP$，所以能否破解上面的问题的关键就在于下图中绿色donut的部分，也叫NP-Complete问题。若该部分为空，则得证P = NP.
+我们知道$P \subset NP$，所以能否破解上面的问题的关键就在于下图中绿色donut的部分，也叫NP-Complete问题。若该部分为空，则得证P = NP. 反之，则证明 P ≠ NP 。
 
 <p><img src="./img/np1_np_completeness.png" width="300", height="200"></p>
 
+## 11.5. SAT 是 NP-Complete
+
+SAT 是 NP-Complete说明什么？
+1. SAT $\in$ NP - SAT是NP问题（这个我们之前已经说明过了），意味着SAT问题的某个解能够在多项式时间内被验证。
+2. 不存在某个算法能够在多项式时间内找到 SAT问题的解
+
+如果 SAT 问题是NP-Complete的，说明其他 NP问题也能在多项式时间内求解，例如 MST问题、k-coloring问题、TSP问题等。
+1. 为什么？ —— 例如我们可以将MST问题的input 转换成 SAT 问题的形式，然后用SAT的求解方式 来求解 MST问题。
+2. 怎么做？ —— 我们取 MST 问题的 input，将其 归约（reduce）成 SAT问题的input，然后运行 SAT 问题的算法 来得到MST问题的解。以此类推，就能用类似的 归约方法 在多项式时间内求得其他所有 NP问题的解。
+
+因此，若存在 能够在多项式时间内求解 SAT 问题的算法，我们就能知道 在多项式时间内求解其他所有NP问题的算法。
+
+现在的问题在于如果 P ≠ NP，那意味着有一些 NP 问题是不能在多项式时间内求解的，进而说明我们无法在多项式时间内求解 SAT问题，也就无法在多项式时间内求解所有 NP问题。
+
+## 11.6. Reductions
+
+假设我们有问题 A 和 B，想要找到从 A 到 B的 reduction（归约）。
+
+我们以 A 为k-coloring问题；B为 SAT问题 为例。 A $\rarr$ B表示我们要找到的 reduction。若能找到 归约 A $\rarr$ B，则意味着 B 问题的难度 $\geq$ A问题；也意味着，如果能在多项式时间内解决 B问题，则一定能用更少的时间解决 A问题。
+
+所以当我们尝试设计算法的时候，考虑针对问题A 进行算法设计就更加简单。
+
+如何找到从 k-coloring 问题 到 SAT 问题的 归约呢？—— 我们可以假设一个黑箱算法，该算法能够在多项式时间内解决SAT问题。我们可以给这个黑箱算法一些input与output。然后我们希望用这个黑箱算法来构建k-coloring 问题的 算法。对于k-coloring问题来说，
+* input是一个图G，以及K种不同的颜色
+
+然后我们要定义一种变换$f$，它能够将k-coloring问题的input转换成SAT问题的input。这意味着，我们要将G和K变成 SAT问题中的 boolean formula （CNF）。我们再定义另一种变换$h$（也就是$f$的反变换），它能够将SAT问题的input转换成k-coloring问题的input。我们用$I$表示k-coloring问题的input。这时，如果$S$是$f(I)$的解，那么$h(S)$就是$I$的解。
+
+$f(G, K)$表示将k-coloring的input转换为SAT的input，它应该是一个boolean formula（因为SAT问题就是boolean formula）。我们要定义两个变换函数$f$和$h$，然后要证明：
+* 若$S$是$f$的解，那么$h(S)$就应该是原图$G$的一个解
+* 此外，若SAT问题无解，那么k-coloring也应该无解；反之亦然。
+
+即，当且仅当$h(S)$是k-coloring问题$(G, K)$的解时，$f(G, K)$有解。
 
 
+## 11.7. NP-Completeness Proof
 
+我们来看一下如何证明一个问题是NP-Complete问题。我们以Independent Set（IS）问题为例，这个问题本身是什么并不重要，重要的是看一下如何证明）。
+1. 首先，我们需要证明IS问题是属于NP问题的，这个我们已经知道如何证明了，即证该问题需要多项式时间来验证一个给定解的正确性
+2. 接下来，需要证明，如果我们能够在多项式时间内解决IS问题，那么我们就能在多项式时间内解决任何NP问题。我们需要证明，对于每个NP问题 A，都存在一个reduction（归约方法）使得 A $\rarr$ IS。也就是说，如果有某个算法能够在多项式时间内解决IS问题，那就能用这个算法（黑箱）在多项式时间内解决问题A。
+3. 又由于我们能对每个NP问题 A都这样做，所以若该黑箱算法存在，那么所有NP问题都能在多项式时间内被解决。
 
+上面的第二步如何做？—— 我们取NP问题中的每个问题，证明每个问题都存在一个 reduction 指向IS问题即可
 
+证明过程如下：
+
+我们知道SAT问题属于NP-Complete问题，且对于每个NP问题A，我们知道从A 到 SAT问题之间有 reduction。现在假设我们能证明SAT问题能归约成IS问题，即 A $\rarr$ IS，那我们就知道 A $\in \text{NP}$能归约成 SAT，即A $\rarr$ SAT。又因为SAT $\rarr$ IS，所以我们能得到 A $\rarr$ SAT $\rarr$ IS，于是，对于每个NP问题 A $\in$ NP, 我们有从 A到 IS问题的归约。若我们知道任何一个NP-Complete问题（例如SAT），那我们就能证明 IS问题也是NP-Complete的。于是，我们只要证明：
+1. IS问题 属于 NP问题; 
+2. 存在从 SAT $\rarr$ IS的归约。
+
+首先，我们将从 SAT 问题入手，然后逐步扩充我们所掌握的 NP 完全问题的范围。接着，我们可以选取这些已知的 NP 完全问题中的任何一个，并将其转化为我们正在试图证明为 NP 完全的这个新问题。现在，这听起来就更具体了。
+
+> ⚠️ 困扰许多学生的是 reduction 方向的问题，一定要确保reduction是从 已知的NP-Complete问题 $\rarr$ 未知的问题
+
+> 练习题：Chapter 8的前两个问题
+
+<p><img src="./img/np1_diagram.png" width="700", height="150"></p>
 
 
 
